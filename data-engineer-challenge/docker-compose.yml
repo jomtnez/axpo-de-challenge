@@ -11,6 +11,7 @@ services:
 
   iot_data_generator:
     build: ./iot_data_generator
+    command: python run.py
     environment:
       - MQTT_HOST=mqtt_broker
       - MQTT_PORT=1883
@@ -19,7 +20,19 @@ services:
       - LOGGING_LEVEL=20
     depends_on:
       - mqtt_broker
-
+  
+  data_processor:
+    build: ./data_processor
+    command: python mqtt_to_parquet.py
+    environment:
+      - MQTT_HOST=mqtt_broker
+      - MQTT_PORT=1883
+      - MQTT_TOPIC=sensors
+    depends_on:
+      - mqtt_broker
+    volumes:
+      - ./raw_json_data:/app/raw_json_data
+      - ./parquet_tables:/app/parquet_tables
 
 volumes:
   data: ~
