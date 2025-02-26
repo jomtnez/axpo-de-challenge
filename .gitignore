@@ -256,3 +256,6 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 
+# folders inside the data-engineer-challenge directory
+data-engineer-challenge/parquet_tables/*
+data-engineer-challenge/raw_json_data/*

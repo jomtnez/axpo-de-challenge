@@ -1,0 +1,17 @@
+# Pasos que he seguido para el step 1
+- Qué es mqtt? video rápido de youtube.
+- Entender docker un poco mejor, comandos típicos:
+    - docker-compose build / down / stop / up -d
+- Solventar problemas de requirements, pydantinc settings.
+- Solventar archivo .env en dockerignore, no estaba cogiendo los datos de user y password.
+- Separar el docker compose en tres partes: el broker, el generador de datos de sensores y el consumidor de los datos.
+- Mi idea original era utilizar el conector de mqtt para spark directamente, y utilizar spark streaming para escribir en delta. Problemas:
+    - El conector está deprecado, aparentemente se puede conseguir de un repositorio de git, pero parece un poco tedioso.
+    - Para tener tablas delta es necesario el .jar de delta, lo cual hace un poco más complicado el problema y no hay mucho tiempo. En lugar de eso he utilizado tablas parquet.
+    - El resto de problemas y errores del código he conseguido solventarlos a traves de mirar los errores en la consola de docker desktop (y con ayuda de Gemini).
+- Finalmente, el proceso escribe una tabla de master data para los sensores, a partir de ahí acumula los mensajes en una lista y escribe al llegar a cierto límite o al pasar cierto tiempo.
+- En cuanto a data quality, he incluido un check que comprueba que el valor generado por el sensor está dentro del rango.
+- Como cosas extra, he incluido también diferentes logs a lo largo del código y también almaceno en las tablas información sobre cuando fueron procesados los datos.
+- He escogido como particion el sensor id y la fecha de carga.
+- También era mi idea incluir una parte en el código que almacena los archivos .json en una carpeta particionando por fecha al igual que en la tabla, pero no he tenido más tiempo.
+- Por último incluí un limite de tiempo tanto en el generador como en el consumidor, para que no almacene información sin límite.
